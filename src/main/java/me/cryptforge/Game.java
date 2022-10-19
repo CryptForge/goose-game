@@ -1,8 +1,8 @@
 package me.cryptforge;
 
+import me.cryptforge.render.GameRenderer;
 import me.cryptforge.tile.*;
 import me.cryptforge.util.WrappedInt;
-import org.fusesource.jansi.Ansi;
 
 import java.util.List;
 
@@ -12,13 +12,12 @@ public class Game {
     private final Board board;
     private final WrappedInt currentPlayer;
     private final Dice dice;
+    private final GameRenderer renderer;
 
     private boolean isDone;
-    private Player winner;
 
-    private int moves;
-
-    public Game(int boardSize, Player... players) {
+    public Game(int boardSize, GameRenderer renderer, Player... players) {
+        this.renderer = renderer;
         this.players = List.of(players);
         this.board = new Board(boardSize);
         this.currentPlayer = new WrappedInt(0, 0, players.length);
@@ -27,8 +26,8 @@ public class Game {
         board.fill(NumberedTile::new);
 
         // Goose tiles
-        for(double i = 5; i < boardSize; i += 4.5) {
-            board.setTile((int) Math.floor(i),new GooseTile());
+        for (double i = 5; i < boardSize; i += 4.5) {
+            board.setTile((int) Math.floor(i), new GooseTile());
         }
 
         board.setTile(6, new TeleportTile(12)); // bridge
@@ -46,8 +45,8 @@ public class Game {
         player.setPosition(target);
 
         final Tile tile = board.getTile(target);
-        if(activateTile) {
-            tile.activate(this,player);
+        if (activateTile) {
+            tile.activate(this, player);
         }
 
         return tile;
@@ -57,53 +56,50 @@ public class Game {
         final int actualAmount = player.getDirection().transform(amount);
         int target = player.getPosition() + actualAmount;
 
-        final int finishTile = board.length() - 1;
-        if(target > finishTile) {
+        final int finishTile = board.size() - 1;
+        if (target > finishTile) {
             final int amountLeft = Math.abs(target - finishTile);
             player.setDirection(Direction.BACKWARD);
             player.setPosition(finishTile);
-            return movePlayer(player,amountLeft,true);
+            return movePlayer(player, amountLeft, true);
         }
 
-        target = Math.max(0,target);
+        target = Math.max(0, target);
 
-        return setPlayerPosition(player,target,activateTile);
+        return setPlayerPosition(player, target, activateTile);
     }
 
     public void gameLoop() {
-        System.out.println(this);
         final Player player = getCurrentPlayer();
 
-        System.out.println(player.getColor() + "'s turn");
+        renderer.sendMessage(player.getColor() + "'s turn");
         boolean doTurn = player.tickEffects();
 
-        if(doTurn) {
+        if (doTurn) {
             player.setDirection(Direction.FORWARD);
             dice.roll();
             int amountToMove = dice.getTotal();
-            if(player.getPosition() == 0) { // Shortcuts
-                if((dice.getResult(0) == 4 && dice.getResult(1) == 5) || (dice.getResult(0) == 5 && dice.getResult(1) == 4))
+            if (player.getPosition() == 0) { // Shortcuts
+                if ((dice.getResult(0) == 4 && dice.getResult(1) == 5) || (dice.getResult(0) == 5 && dice.getResult(1) == 4))
                     amountToMove = 53;
-                if((dice.getResult(0) == 6 && dice.getResult(1) == 3) || (dice.getResult(0) == 3 && dice.getResult(1) == 6))
+                if ((dice.getResult(0) == 6 && dice.getResult(1) == 3) || (dice.getResult(0) == 3 && dice.getResult(1) == 6))
                     amountToMove = 26;
             }
 
-            System.out.println(player.getColor() + " is attempting to move " + amountToMove + " tiles");
+            renderer.sendMessage(player.getColor() + " is attempting to move " + amountToMove + " tiles");
 
-            final Tile tile = movePlayer(player,amountToMove,true);
+            final Tile tile = movePlayer(player, amountToMove, true);
 
-            System.out.println(player.getColor() + " has landed on " + tile);
+            renderer.sendMessage(player.getColor() + " has landed on " + tile);
         }
-
-        System.out.println(this);
-        moves++;
         currentPlayer.increment();
+
+        renderer.render(this);
     }
 
     public void win(Player player) {
         System.out.println(player.getColor() + " wins!");
         isDone = true;
-        winner = player;
     }
 
     public Player getPlayerAtTile(int tile) {
@@ -133,35 +129,11 @@ public class Game {
         return dice;
     }
 
-    public Player getWinner() {
-        return winner;
+    public Board getBoard() {
+        return board;
     }
 
     public boolean isDone() {
         return isDone;
-    }
-
-    public int getMoves() {
-        return moves;
-    }
-
-    @Override
-    public String toString() {
-        final Ansi ansi = Ansi.ansi();
-
-        for(int i = 0; i < board.length(); i++) {
-            final Tile tile = board.getTile(i);
-            final Player player = getPlayerAtTile(i);
-
-            ansi.a('|');
-
-            if(player != null) {
-                ansi.fg(player.getColor().getAnsiColor()).a('G').reset();
-            } else {
-                ansi.a(tile.toString());
-            }
-        }
-
-        return ansi.toString();
     }
 }

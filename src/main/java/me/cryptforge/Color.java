@@ -16,7 +16,7 @@ public enum Color {
         this.ansiColor = ansiColor;
     }
 
-    public Ansi.Color getAnsiColor() {
+    public Ansi.Color toAnsi() {
         return ansiColor;
     }
 

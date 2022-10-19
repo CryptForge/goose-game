@@ -12,7 +12,7 @@ public class PrisonEffect extends StatusEffect {
     @Override
     public boolean tick() {
         decrementTurnsLeft();
-        if(isPlayerBehind()) {
+        if (isPlayerBehind()) {
             setTurnsLeft(1);
         }
         return false;
@@ -20,7 +20,7 @@ public class PrisonEffect extends StatusEffect {
 
     private boolean isPlayerBehind() {
         for (Player player : getGame().getPlayers()) {
-            if(player.getPosition() < getPlayer().getPosition())
+            if (player.getPosition() < getPlayer().getPosition())
                 return true;
         }
         return false;

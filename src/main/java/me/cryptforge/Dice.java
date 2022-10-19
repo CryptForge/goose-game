@@ -1,6 +1,5 @@
 package me.cryptforge;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Dice {
@@ -22,8 +21,8 @@ public class Dice {
         }
     }
 
-    public int getResult(int i) {
-        return results[i];
+    public int getResult(int index) {
+        return results[index];
     }
 
     public int getTotal() {

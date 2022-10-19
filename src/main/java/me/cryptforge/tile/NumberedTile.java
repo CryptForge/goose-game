@@ -13,7 +13,6 @@ public class NumberedTile extends Tile {
 
     @Override
     public void activate(Game game, Player player) {
-
     }
 
     @Override

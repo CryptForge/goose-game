@@ -13,7 +13,7 @@ public class TeleportTile extends Tile {
 
     @Override
     public void activate(Game game, Player player) {
-        game.setPlayerPosition(player,target,false);
+        game.setPlayerPosition(player, target, false);
     }
 
     @Override

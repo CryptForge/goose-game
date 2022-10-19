@@ -8,9 +8,8 @@ public class PrisonTile extends Tile {
 
     @Override
     public void activate(Game game, Player player) {
-        player.addStatusEffect(new PrisonEffect(game,player));
+        player.addStatusEffect(new PrisonEffect(game, player));
     }
-
 
     @Override
     public String toString() {

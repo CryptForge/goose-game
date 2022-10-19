@@ -6,7 +6,7 @@ import me.cryptforge.Player;
 public class GooseTile extends Tile {
     @Override
     public void activate(Game game, Player player) {
-        game.movePlayer(player,game.getDice().getTotal(), true);
+        game.movePlayer(player, game.getDice().getTotal(), true);
     }
 
     @Override

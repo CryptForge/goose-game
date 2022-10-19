@@ -3,10 +3,7 @@ package me.cryptforge;
 import me.cryptforge.tile.Tile;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class Board {
 
@@ -24,20 +21,15 @@ public class Board {
         tiles[index] = tile;
     }
 
-    public void fill(Function<Integer,Tile> supplier) {
-        for(int i = 0; i < length(); i++) {
+    public void fill(Function<Integer, Tile> supplier) {
+        for (int i = 0; i < size(); i++) {
             tiles[i] = supplier.apply(i);
         }
     }
 
-    public List<Tile> getTiles() {
-        return List.of(tiles);
-    }
-
-    public int length() {
+    public int size() {
         return tiles.length;
     }
-
 
     @Override
     public String toString() {

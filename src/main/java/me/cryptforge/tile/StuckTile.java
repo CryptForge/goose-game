@@ -14,7 +14,7 @@ public class StuckTile extends Tile {
 
     @Override
     public void activate(Game game, Player player) {
-        player.addStatusEffect(new StuckEffect(game,player,length));
+        player.addStatusEffect(new StuckEffect(game, player, length));
     }
 
     @Override

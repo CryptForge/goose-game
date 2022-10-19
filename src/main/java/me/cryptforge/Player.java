@@ -47,7 +47,7 @@ public class Player {
     public boolean tickEffects() {
         boolean doTurn = true;
         for (StatusEffect effect : effects) {
-            if(!effect.tick()) {
+            if (!effect.tick()) {
                 doTurn = false;
             }
         }
